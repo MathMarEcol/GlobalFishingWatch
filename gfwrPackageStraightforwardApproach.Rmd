@@ -91,7 +91,7 @@ Date range is limited to 1-year. Nevertheless, with some modifications, we can g
 #### `get_gfwFishingEffort` function.
 
 The `get_gfwFishingEffort` function recover the data of Global Fishing Watch and returns it as a sf object. <br>
-We have the same parameters than the `get_raster` function, plus one parameter `group_by_vars` which is basically the choice of the variable(s) we want to group by the data if we want to summarize the fishing hours per specific variables. <br> 
+We have the same parameters than the `get_raster` function, plus `n_crs` which is the crs for the sf_modification <br> 
 Different possible values can be combined and are : <br>
 - `Time Range`, `Flag`, `Geartype`. <br>
 _(A combination can be : c('Time Range','Geartype'), if you want to get the sum of fishing hours per date and geartype, for example you want to display the drifting longline fishing in a specific year)_ <br> <br>
@@ -99,7 +99,7 @@ __Notes :__ <br>
 1. For the moment we are limited to the EEZs of each region, but we can potentially restrict the working area to specific MPAs (further details in the gfwr package). <br>
 2. Days indicated in the__ `start_date` __and__ `end_date` __variables are included in the data recovery.
 ```{r}
-get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, sfcrs, group_by_vars = NULL) {
+get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, n_crs = 4326) {
   
   region_id <- get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
   
@@ -128,20 +128,13 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, s
   if (as.numeric(difftime(end_date, start_date, units = "days")) <= 366) {
     # If yes, obtain data for the entire date range
     data_sf <- get_data_for_range(start_date, end_date) %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = 4326)
+      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
   } else {
     # If not, divide the date range into 366-day chunks and obtain the data for each chunk.
     date_chunks <- seq(start_date, end_date, by = "366 days")
     data_sf <- purrr::map(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date))) %>%
       dplyr::bind_rows() %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = 4326)
-  }
-  
-  # If group_by_vars is specified, we group_by them.
-  if (!is.null(group_by_vars)) {
-    data_sf <- data_sf %>%
-      dplyr::group_by(across(all_of(group_by_vars))) %>% 
-      dplyr::summarize('Apparent Fishing Hours' = sum(`Apparent Fishing Hours`))
+      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
   }
   
   # Separate the "Time Range" column based on the specified temp_res
@@ -159,7 +152,6 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, s
     }
   }
   
-  
   return(data_sf)
 }
 ```
@@ -167,7 +159,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, s
 
 To get the raw values given by GFW we do not need to specify any variable of gathering in `group_by_vars` parameter. 
 ```{r, message=FALSE}
-data_sf_combined <- get_gfwData('Australie', "2019-01-01", "2023-12-31", "yearly", "low", key)
+data_sf_combined <- get_gfwData('Australie', "2019-01-01", "2023-12-31", "yearly", "low", key, 4326)
 ```
 
 
@@ -245,24 +237,27 @@ ggplot(data_sf_combined) +
   geom_sf(data = eezs, color = 'red') +  # Ajouter la EEZ avec hachures
   theme_minimal() +
   scale_color_viridis_d(guide = "legend") +
-  labs(title = "Vessel Activity Map in Australia between 2019 and 2023", subtitle = "Fishing Hours data recorded by GFW", color = "Years") +
+  labs(title = "Vessel Activity Map in Australia between 2019 and 2024", subtitle = "Fishing Hours data recorded by GFW", color = "Years") +
   theme(legend.position = "bottom",
         legend.text = element_text(size = 8),  
         legend.title = element_text(size = 10))  
 ```
 
 ##### Year-on-year comparison
-We need to change the temporal range and add the variable to group to display the total fishing hours per month. <br>
+We may need to compare different timeframes, such as seasons, to see if there are any patterns. <br>
 __Note :__ As more vessels have adopted AIS (mainly in economically developed countries) since the deployment of these technologies, the rise in activities must be seen in the context of this increase and not necessarily of more intense fishing activity.
 ```{r, message=FALSE}
-data_sf_combined <- get_gfwData('Australie', "2019-01-01", "2023-01-01", "monthly", "low", key, "Time Range")
+#We need to change the temporal range according to our need group by it to display the total fishing hours. <br>
+data_sf_combined <- get_gfwData('Australie', "2014-01-01", "2023-12-31", "monthly", "low", key, 4326) %>%
+  group_by(Year, Month) %>%
+  summarize(Total_Fishing_Hours = sum(`Apparent Fishing Hours`))
 ```
 
 ```{r, echo=FALSE}
-ggplot(data_sf_combined, aes(x = Month, y = `Apparent Fishing Hours`, color = Year, group = Year)) +
+ggplot(data_sf_combined, aes(x = Month, y = Total_Fishing_Hours, color = Year, group = Year)) +
   geom_line() +
   geom_point() +
-  labs(title = "Total Fishing Hours per month (2019-2023)", 
+  labs(title = "Total Fishing Hours per month (2014-2023)", 
        x = "Month", y = "Total Fishing Hours") +
   theme_minimal()
 ```
@@ -270,7 +265,7 @@ ggplot(data_sf_combined, aes(x = Month, y = `Apparent Fishing Hours`, color = Ye
 ##### Fishing gear type
 Here we display the Vessel activity in 'Micronesia' in 2022 according to the fishing gear type.
 ```{r, message=FALSE}
-data_sf_combined <- get_gfwData('Micronesia', "2019-01-01", "2023-01-01", "monthly", "low", key)
+data_sf_combined <- get_gfwData('Micronesia', "2022-01-01", "2022-12-31", "monthly", "low", key)
 ```
 
 ```{r, echo=FALSE, message=FALSE, results='hide'}
@@ -299,7 +294,7 @@ ggplot(data_sf_combined) +
 ##### Flags
 Here we display the Vessel activity in Papua New Guinea according to Vessels flags.
 ```{r, echo=FALSE, message=FALSE, results='hide'}
-data_sf_combined <- get_gfwData('Papua New Guinea', "2019-01-01", "2023-01-01", "monthly", "low", key)
+data_sf_combined <- get_gfwData('Papua New Guinea', "2022-01-01", "2022-12-31", "monthly", "low", key)
 
 coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
   sf::st_as_sf() %>%

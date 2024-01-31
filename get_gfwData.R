@@ -1,4 +1,4 @@
-get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, group_by_vars = NULL) {
+get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, n_crs = 4326) {
   
   region_id <- get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
   
@@ -10,7 +10,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, g
   get_data_for_range <- function(start_date, end_date) {
     date_range <- paste(start_date, end_date, sep = ",")
     
-    data <- gfwr::get_raster(
+    data <- get_raster(
       spatial_resolution = spat_res,
       temporal_resolution = temp_res,
       group_by = 'flagAndGearType',
@@ -27,20 +27,13 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, g
   if (as.numeric(difftime(end_date, start_date, units = "days")) <= 366) {
     # If yes, obtain data for the entire date range
     data_sf <- get_data_for_range(start_date, end_date) %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = 4326)
+      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
   } else {
     # If not, divide the date range into 366-day chunks and obtain the data for each chunk.
     date_chunks <- seq(start_date, end_date, by = "366 days")
     data_sf <- purrr::map(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date))) %>%
       dplyr::bind_rows() %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = 4326)
-  }
-  
-  # If group_by_vars is specified, we group_by them.
-  if (!is.null(group_by_vars)) {
-    data_sf <- data_sf %>%
-      dplyr::group_by(across(all_of(group_by_vars))) %>% 
-      dplyr::summarize('Apparent Fishing Hours' = sum(`Apparent Fishing Hours`))
+      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
   }
   
   # Separate the "Time Range" column based on the specified temp_res
@@ -57,7 +50,6 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, g
         tidyr::separate("Time Range", into = c("Year", "Month", "Day"), sep = "-", remove = FALSE)
     }
   }
-  
   
   return(data_sf)
 }
