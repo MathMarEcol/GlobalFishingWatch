@@ -43,9 +43,3 @@ gg2 <- ggplot() +
 patchwork::wrap_plots(gg1, gg2, ncol = 1) # Looks good
 
 
-## This still doesn't work. We will update data_to_planning_grid in due course.
-gfw_data_gridded <- data_to_planning_grid(planning_grid = PUs, dat = gfw_data, name = "FishHrs",
-                                          meth = "average",
-                                          sf_col_layer_names = "Apparent Fishing Hours")
-
-ggplot(data = gfw_data_gridded) + geom_sf(aes(fill = FishHrs))

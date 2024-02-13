@@ -5,7 +5,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
                         compress = FALSE) {
 
 
-  region_id <- get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
+  region_id <- gfwr::get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
 
   # Convert dates into Date objects
   start_date <- as.Date(start_date, format = "%Y-%m-%d")
@@ -15,7 +15,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
   get_data_for_range <- function(start_date, end_date) {
     date_range <- paste(start_date, end_date, sep = ",")
 
-    data <- get_raster(
+    data <- gfwr::get_raster(
       spatial_resolution = spat_res,
       temporal_resolution = temp_res,
       group_by = 'flagAndGearType',
@@ -41,7 +41,9 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
 
   if (isTRUE(compress)){
     # GFW data will always be "EPSG:4326". No need to have CRS as an option here
+
     data_df <- data_df %>%
+      purrr::map_dfr(bind_rows) %>%
       dplyr::select("Lon", "Lat", "Apparent Fishing Hours") %>%
       dplyr::group_by(Lon, Lat) %>%
       dplyr::summarise("Apparent Fishing Hours" = sum(`Apparent Fishing Hours`, na.rm = T)) %>%
@@ -60,6 +62,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
     # Separate the "Time Range" column based on the specified temp_res
     if (temp_res == "yearly") {
       data_sf <- data_df %>%
+        purrr::map_dfr(bind_rows) %>%
         dplyr::mutate(Year = `Time Range`) %>%
         sf::st_as_sf(coords = c("Lon", "Lat"), crs ="EPSG:4326")
     } else {
