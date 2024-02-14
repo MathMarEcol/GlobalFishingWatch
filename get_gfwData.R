@@ -4,7 +4,6 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
                         cCRS = "EPSG:4326",
                         compress = FALSE) {
 
-
   region_id <- gfwr::get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
 
   # Convert dates into Date objects
@@ -59,10 +58,12 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
 
   } else if (isFALSE(compress)){
 
+    # Combine data frames in the list into one data frame
+    data_df <- bind_rows(data_df)
+
     # Separate the "Time Range" column based on the specified temp_res
     if (temp_res == "yearly") {
       data_sf <- data_df %>%
-        purrr::map_dfr(bind_rows) %>%
         dplyr::mutate(Year = `Time Range`) %>%
         sf::st_as_sf(coords = c("Lon", "Lat"), crs ="EPSG:4326")
     } else {

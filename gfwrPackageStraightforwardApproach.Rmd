@@ -99,59 +99,93 @@ __Notes :__ <br>
 1. For the moment we are limited to the EEZs of each region, but we can potentially restrict the working area to specific MPAs (further details in the gfwr package). <br>
 2. Days indicated in the__ `start_date` __and__ `end_date` __variables are included in the data recovery.
 ```{r}
-get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, n_crs = 4326) {
-  
-  region_id <- get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
-  
+get_gfwData <- function(region, start_date, end_date, temp_res,
+                        spat_res = "low",
+                        key = gfwr::gfw_auth(),
+                        cCRS = "EPSG:4326",
+                        compress = FALSE) {
+
+
+  region_id <- gfwr::get_region_id(region_name = region, region_source = 'eez', key = key)$id[1]
+
   # Convert dates into Date objects
   start_date <- as.Date(start_date, format = "%Y-%m-%d")
   end_date <- as.Date(end_date, format = "%Y-%m-%d")
-  
+
   # Function to obtain data for a specific date range
   get_data_for_range <- function(start_date, end_date) {
     date_range <- paste(start_date, end_date, sep = ",")
-    
-    data <- get_raster(
+
+    data <- gfwr::get_raster(
       spatial_resolution = spat_res,
       temporal_resolution = temp_res,
       group_by = 'flagAndGearType',
       date_range = date_range,
-      region = region_id, 
+      region = region_id,
       region_source = 'eez',
       key = key
     )
-    
+
     return(data)
   }
-  
+
   # Check whether the date range is less than or equal to 366 days
   if (as.numeric(difftime(end_date, start_date, units = "days")) <= 366) {
     # If yes, obtain data for the entire date range
-    data_sf <- get_data_for_range(start_date, end_date) %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
+    data_df <- get_data_for_range(start_date, end_date)
+
   } else {
     # If not, divide the date range into 366-day chunks and obtain the data for each chunk.
     date_chunks <- seq(start_date, end_date, by = "366 days")
-    data_sf <- purrr::map(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date))) %>%
-      dplyr::bind_rows() %>%
-      sf::st_as_sf(coords = c("Lon", "Lat"), crs = n_crs)
+    data_df <- purrr::map(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date)))
   }
-  
-  # Separate the "Time Range" column based on the specified temp_res
-  if (temp_res == "yearly") {
-    data_sf <- data_sf %>%
-      dplyr::mutate(Year = `Time Range`)
-  } else {
-    # Sinon, séparer la colonne "Time Range" selon le temp_res spécifié
-    if (temp_res == "monthly") {
-      data_sf <- data_sf %>%
-        tidyr::separate("Time Range", into = c("Year", "Month"), sep = "-", remove = FALSE)
-    } else if (temp_res == "daily") {
-      data_sf <- data_sf %>%
-        tidyr::separate("Time Range", into = c("Year", "Month", "Day"), sep = "-", remove = FALSE)
+
+  if (isTRUE(compress)){
+    # GFW data will always be "EPSG:4326". No need to have CRS as an option here
+
+    data_df <- data_df %>%
+      purrr::map_dfr(bind_rows) %>%
+      dplyr::select("Lon", "Lat", "Apparent Fishing Hours") %>%
+      dplyr::group_by(Lon, Lat) %>%
+      dplyr::summarise("Apparent Fishing Hours" = sum(`Apparent Fishing Hours`, na.rm = T)) %>%
+      dplyr::ungroup()
+
+    data_sf <- data_df %>%
+      terra::rast(type = "xyz", crs = "EPSG:4326") %>% # Convert to polygons for easier use
+      terra::as.polygons(trunc = FALSE, dissolve = FALSE, na.rm = TRUE, round = FALSE) %>%
+      sf::st_as_sf()
+
+    if (dim(data_df)[1] != dim(data_sf)[1])
+    {stop("Data dimensions of data_df and data_sf do not match after conversion to polygon")}
+
+  } else if (isFALSE(compress)){
+
+    # Separate the "Time Range" column based on the specified temp_res
+    if (temp_res == "yearly") {
+      data_sf <- data_df %>%
+        purrr::map_dfr(bind_rows) %>%
+        dplyr::mutate(Year = `Time Range`) %>%
+        sf::st_as_sf(coords = c("Lon", "Lat"), crs ="EPSG:4326")
+    } else {
+      # Sinon, séparer la colonne "Time Range" selon le temp_res spécifié
+      if (temp_res == "monthly") {
+        data_sf <- data_df %>%
+          tidyr::separate("Time Range", into = c("Year", "Month"), sep = "-", remove = FALSE) %>%
+          sf::st_as_sf(coords = c("Lon", "Lat"), crs = "EPSG:4326")
+      } else if (temp_res == "daily") {
+        data_sf <- data_df %>%
+          tidyr::separate("Time Range", into = c("Year", "Month", "Day"), sep = "-", remove = FALSE) %>%
+          sf::st_as_sf(coords = c("Lon", "Lat"), crs = "EPSG:4326")
+      }
     }
   }
-  
+
+  # But you may wish to return the data in a different CRS. For this you need transform
+  if (isFALSE(cCRS == "EPSG:4326")){
+    data_sf <- data_sf %>%
+      sf::st_transform(crs = cCRS)
+  }
+
   return(data_sf)
 }
 ```
@@ -159,7 +193,7 @@ get_gfwData <- function(region, start_date, end_date, temp_res, spat_res, key, n
 
 To get the raw values given by GFW we do not need to specify any variable of gathering in `group_by_vars` parameter. 
 ```{r, message=FALSE}
-data_sf_combined <- get_gfwData('Australie', "2019-01-01", "2023-12-31", "yearly", "low", key, 4326)
+data_sf_combined <- get_gfwData('Australie', "2021-01-01", "2023-12-31", "yearly", "low", key = key, compress = FALSE)
 ```
 
 
@@ -170,8 +204,11 @@ To display the data, we load : <br>
 - The coastline from `rnaturalearth` package and modify it to get an sf object, and we constrain it to the boundaries of the given data. <br>
 - EEZ Polygons from _Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 12. Available online at https://www.marineregions.org/. https://doi.org/10.14284/632_
 ```{r, message = FALSE, results='hide'}
+# Check and modify if necessary the spatial reference of data_sf_combined
+data_sf_combined <- st_set_crs(data_sf_combined, st_crs(rnaturalearth::ne_coastline(scale = 'large'))) 
+
 coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
-  sf::st_as_sf() %>%
+  sf::st_as_sf() %>% 
   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
 
 # Load EEZ polygons
@@ -248,9 +285,9 @@ We may need to compare different timeframes, such as seasons, to see if there ar
 __Note :__ As more vessels have adopted AIS (mainly in economically developed countries) since the deployment of these technologies, the rise in activities must be seen in the context of this increase and not necessarily of more intense fishing activity.
 ```{r, message=FALSE}
 #We need to change the temporal range according to our need group by it to display the total fishing hours. <br>
-data_sf_combined <- get_gfwData('Australie', "2014-01-01", "2023-12-31", "monthly", "low", key, 4326) %>%
-  group_by(Year, Month) %>%
-  summarize(Total_Fishing_Hours = sum(`Apparent Fishing Hours`))
+data_sf_combined <- get_gfwData('Australie', "2019-01-01", "2023-12-31", "monthly") %>%
+  dplyr::group_by(Year, Month) %>%
+  dplyr::summarize(Total_Fishing_Hours = sum(`Apparent Fishing Hours`))
 ```
 
 ```{r, echo=FALSE}
@@ -269,6 +306,9 @@ data_sf_combined <- get_gfwData('Micronesia', "2022-01-01", "2022-12-31", "month
 ```
 
 ```{r, echo=FALSE, message=FALSE, results='hide'}
+# Check and modify if necessary the spatial reference of data_sf_combined
+data_sf_combined <- st_set_crs(data_sf_combined, st_crs(rnaturalearth::ne_coastline(scale = 'large'))) 
+
 coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
   sf::st_as_sf() %>%
   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
@@ -294,7 +334,8 @@ ggplot(data_sf_combined) +
 ##### Flags
 Here we display the Vessel activity in Papua New Guinea according to Vessels flags.
 ```{r, echo=FALSE, message=FALSE, results='hide'}
-data_sf_combined <- get_gfwData('Papua New Guinea', "2022-01-01", "2022-12-31", "monthly", "low", key)
+data_sf_combined <- get_gfwData('Papua New Guinea', "2022-01-01", "2022-12-31", "monthly", "low", key) %>%
+  st_set_crs(st_crs(rnaturalearth::ne_coastline(scale = 'large'))) 
 
 coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
   sf::st_as_sf() %>%
