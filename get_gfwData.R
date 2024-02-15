@@ -35,17 +35,16 @@ get_gfwData <- function(region, start_date, end_date, temp_res,
   } else {
     # If not, divide the date range into 366-day chunks and obtain the data for each chunk.
     date_chunks <- seq(start_date, end_date, by = "366 days")
-    data_df <- purrr::map(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date)))
+    data_df <- purrr::map_dfr(date_chunks, ~ get_data_for_range(.x, min(.x + 365, end_date)))
   }
 
   if (isTRUE(compress)){
     # GFW data will always be "EPSG:4326". No need to have CRS as an option here
 
     data_df <- data_df %>%
-      purrr::map_dfr(bind_rows) %>%
       dplyr::select("Lon", "Lat", "Apparent Fishing Hours") %>%
       dplyr::group_by(Lon, Lat) %>%
-      dplyr::summarise("Apparent Fishing Hours" = sum(`Apparent Fishing Hours`, na.rm = T)) %>%
+      dplyr::summarise("Apparent Fishing Hours" = sum(`Apparent Fishing Hours`, na.rm = TRUE)) %>%
       dplyr::ungroup()
 
     data_sf <- data_df %>%
