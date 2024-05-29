@@ -315,7 +315,8 @@ main_plot <- ggplot(data_sf_combined) +
                                barwidth = 5,  
                                barheight = 0.5))  
 
-#The display and writing in this section is for information purposes only, to understand how the information on the grid is translated.
+#The display and writing in this section is for information purposes only, to 
+# understand how the information on the grid is translated.
 overlay_plot <- ggplot(data_sf_combined) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf), fill = "white") +  
   geom_sf(aes(color = log10(`Apparent Fishing Hours`))) +
@@ -350,7 +351,7 @@ main_plot +
 ggplot(data_sf_combined) +
   geom_sf(aes(color = as.factor(Year))) +
   geom_sf(data = coast_clipped, color = "black", fill = NA) +  # Add coastline
-  geom_sf(data = eezs, color = 'red') +  # Ajouter la EEZ avec hachures
+  geom_sf(data = eezs, color = 'red', fill = NA) +  # Ajouter la EEZ avec hachures
   theme_minimal() +
   scale_color_viridis_d(guide = "legend") +
   labs(title = "Vessel Activity Map in Australia between 2019 and 2024", 
@@ -370,7 +371,8 @@ these technologies, the rise in activities must be seen in the context
 of this increase and not necessarily of more intense fishing activity.
 
 ```{r, message=FALSE}
-#We need to change the temporal range according to our need group by it to display the total fishing hours. <br>
+#We need to change the temporal range according to our need group by it to 
+# display the total fishing hours. <br>
 data_sf_combined <- get_gfwData('Australie', 
                                 "2019-01-01", 
                                 "2023-12-31", 
@@ -420,7 +422,7 @@ coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
 #   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
 
 eezs <-  mregions::mr_shp(key = "Micronesia:eez") %>% 
-  # dplyr::filter(geoname ==  'Micronesia Exclusive Economic Zone') %>%
+  dplyr::filter(eezs, geoname ==  'Micronesian Exclusive Economic Zone') %>%
   sf::st_transform(crs = sf::st_crs(data_sf_combined)) %>%
   sf::st_make_valid() %>%
   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
@@ -431,7 +433,7 @@ eezs <-  mregions::mr_shp(key = "Micronesia:eez") %>%
 ggplot(data_sf_combined) +
   geom_sf(aes(color = `Geartype`)) +
   geom_sf(data = coast_clipped, color = "black", fill = NA) +  # Add coastline
-  geom_sf(data = eezs, color = 'red') +  # Ajouter la EEZ avec hachures
+  geom_sf(data = eezs, color = 'red', fill = NA) +  # Add EEZ
   theme_minimal() +
   labs(title = "2022 Vessel Activity Map", 
        subtitle = "recorded by GFW in Micronesia", 
@@ -458,10 +460,10 @@ coast_clipped <- rnaturalearth::ne_coastline(scale = 'large') %>%
   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
 
 # Load EEZ polygons
-eezs <- sf::st_read(dsn = '~/2024_Research_A_UQ/World_EEZ_v12_20231025/') %>%
-  sf::st_transform(crs = sf::st_crs(data_sf_combined)) %>%
-  sf::st_make_valid() %>%
-  sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
+# eezs <- sf::st_read(dsn = '~/2024_Research_A_UQ/World_EEZ_v12_20231025/') %>%
+#   sf::st_transform(crs = sf::st_crs(data_sf_combined)) %>%
+#   sf::st_make_valid() %>%
+#   sf::st_intersection(sf::st_as_sfc(sf::st_bbox(data_sf_combined)))
 ```
 
 ```{r, echo=FALSE}
@@ -469,7 +471,7 @@ eezs <- sf::st_read(dsn = '~/2024_Research_A_UQ/World_EEZ_v12_20231025/') %>%
 ggplot(data_sf_combined) +
   geom_sf(aes(color = `Flag`)) +
   geom_sf(data = coast_clipped, color = "black", fill = NA) +  # Add coastline
-  geom_sf(data = eezs, color = 'red') +  # Ajouter la EEZ avec hachures
+  geom_sf(data = eezs, color = 'red', fill = NA) +  # Add EEZ
   scale_size_continuous(range = c(1, 10),
                         guide = "legend", 
                         name = "Flag") +
