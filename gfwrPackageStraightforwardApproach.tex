@@ -1,0 +1,533 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={gfwr package tool},
+  pdfauthor={Kilian GRIHAULT BARREIRO},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{gfwr package tool}
+\author{Kilian GRIHAULT BARREIRO}
+\date{2024-01-14}
+
+\begin{document}
+\maketitle
+
+\hypertarget{how-to-use-global-fishing-watch-r-package-gfwr}{%
+\section{\texorpdfstring{How to use : Global Fishing Watch R Package
+(\texttt{gfwr})}{How to use : Global Fishing Watch R Package (gfwr)}}\label{how-to-use-global-fishing-watch-r-package-gfwr}}
+
+The \texttt{gfwr} package provides convenient functions to pull GFW data
+directly into R into usable formats.\\
+It contains three main functions, including
+\texttt{get\_vessel\_info()}, \texttt{get\_event()} and
+\texttt{get\_raster()}. The two first being devoted to retrieving
+information and features on one ore several specific vessels. The last
+is of particular interest to us because it allows us to gather
+information from global fishing watch raster on the fishing effort
+(further details in the function appropriate section).
+
+The time spent fishing is computed using Automatic Identification System
+(AIS) data, which is transmitted by most industrial fishing vessels. The
+AIS data provides information on the location, speed, and direction of
+the vessel, which can be used to identify when the vessel is actively
+fishing.
+
+\hypertarget{ais-caveats-and-limitations}{%
+\paragraph{AIS Caveats and
+limitations}\label{ais-caveats-and-limitations}}
+
+The AIS coverage of vessels has several limitations such as : 1. The
+number of vessels that are captured (AIS provides approximately 70'000
+of the 2.8 million identified fishing vessels). 2. The size of the
+vessels (52-85\% for vessels larger than 24 meters against 1\% for
+vessels under 12 meters). \emph{Good to know: IMO mandates AIS for most
+vessels larger than 36 meters.} 3. AIS interference with each other in
+areas of high vessel density. 4. Some terrestrial satellites only
+receive messages near shore.
+
+\hypertarget{installation}{%
+\subsection{Installation}\label{installation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{remotes}\SpecialCharTok{::}\FunctionTok{install\_github}\NormalTok{(}\StringTok{"GlobalFishingWatch/gfwr"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(gfwr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(sf)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{api}{%
+\subsection{API}\label{api}}
+
+\begin{description}
+\item[To access GFW APIs, you need to : 1. register for a GFW account
+here]
+\textless{}\href{https://tinyurl.com/2pr5nxxk}{Shortened
+URL}\textgreater{} 2. Request API key here :
+\url{https://globalfishingwatch.org/our-apis/tokens}
+\end{description}
+
+Once you have your token, add it to your .Renviron file (by executing
+the chunk below), by writing (GFW\_TOKEN = ``YOUR\_TOKEN'') in the file.
+\emph{(You could be asked to restart R for changes to take effect.)}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{usethis}\SpecialCharTok{::}\FunctionTok{edit\_r\_environ}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+We save the key in an object that will be used in gfwr functions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{key }\OtherTok{\textless{}{-}} \FunctionTok{gfw\_auth}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{fishing-effort-visualization}{%
+\subsection{Fishing effort
+visualization}\label{fishing-effort-visualization}}
+
+A region\_id is necessary to use the \texttt{get\_raster} function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{region\_id }\OtherTok{\textless{}{-}} \FunctionTok{get\_region\_id}\NormalTok{(}
+  \AttributeTok{region\_name =} \StringTok{"Australia"}\NormalTok{,}
+  \AttributeTok{region\_source =} \StringTok{"eez"}\NormalTok{,}
+  \AttributeTok{key =}\NormalTok{ key}
+\NormalTok{)}\SpecialCharTok{$}\NormalTok{id}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{get\_raster} function gets a raster of fishing effort from
+the API and converts the response to a data frame which contains
+occurrences for each vessel and for each grid cell (data is binned into
+grid cells of different resolution), the \texttt{Vessel\ IDs},
+\texttt{Flag}, \texttt{Geartype} and \texttt{Apparent\ fishing\ Hours}
+which are basically the amount of fishing hours of each vessel per grid
+cell (\texttt{geometry}).
+
+Data can be provided through : - \texttt{daily}, \texttt{monthly} and
+\texttt{yearly} temporal resolutions. - \texttt{low} (0.1 deg) and
+\texttt{high} (0.01 deg) spatial resolutions. - \texttt{vessel\_id},
+\texttt{flag}, \texttt{gearType}, \texttt{flagAndGearType}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{get\_raster}\NormalTok{(}
+  \AttributeTok{spatial\_resolution =} \StringTok{"low"}\NormalTok{,}
+  \AttributeTok{temporal\_resolution =} \StringTok{"monthly"}\NormalTok{,}
+  \AttributeTok{group\_by =} \StringTok{"flagAndGearType"}\NormalTok{,}
+  \AttributeTok{date\_range =} \StringTok{"2022{-}01{-}01,2023{-}01{-}01"}\NormalTok{,}
+  \AttributeTok{region =}\NormalTok{ region\_id,}
+  \AttributeTok{region\_source =} \StringTok{"eez"}\NormalTok{,}
+  \AttributeTok{key =}\NormalTok{ key}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\emph{(You can remove the option} \texttt{message\ =\ FALSE} \emph{to
+see the columns types.)}
+
+\hypertarget{get_raster-caveats-and-limitations.}{%
+\paragraph{\texorpdfstring{\texttt{get\_raster} caveats and
+limitations.}{get\_raster caveats and limitations.}}\label{get_raster-caveats-and-limitations.}}
+
+Date range is limited to 1-year. Nevertheless, with some modifications,
+we can get round these problems through \texttt{get\_gfwFishingEffort}.
+
+\hypertarget{get_gfwfishingeffort-function.}{%
+\paragraph{\texorpdfstring{\texttt{get\_gfwFishingEffort}
+function.}{get\_gfwFishingEffort function.}}\label{get_gfwfishingeffort-function.}}
+
+The \texttt{get\_gfwFishingEffort} function recover the data of Global
+Fishing Watch and returns it as a sf object. We have the same parameters
+than the \texttt{get\_raster} function, plus \texttt{n\_crs} which is
+the crs for the sf\_modification Different possible values can be
+combined and are : - \texttt{Time\ Range}, \texttt{Flag},
+\texttt{Geartype}. \emph{(A combination can be : c(`Time
+Range',`Geartype'), if you want to get the sum of fishing hours per date
+and geartype, for example you want to display the drifting longline
+fishing in a specific year)} \textbf{Notes :} 1. For the moment we are
+limited to the EEZs of each region, but we can potentially restrict the
+working area to specific MPAs (further details in the gfwr package). 2.
+Days indicated in the\_\_ \texttt{start\_date} \textbf{and}
+\texttt{end\_date} \_\_variables are included in the data recovery.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{get\_gfwData }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(region, start\_date, end\_date, temp\_res,}
+                        \AttributeTok{spat\_res =} \StringTok{"low"}\NormalTok{,}
+                        \AttributeTok{key =}\NormalTok{ gfwr}\SpecialCharTok{::}\FunctionTok{gfw\_auth}\NormalTok{(),}
+                        \AttributeTok{cCRS =} \StringTok{"EPSG:4326"}\NormalTok{,}
+                        \AttributeTok{compress =} \ConstantTok{FALSE}\NormalTok{) \{}
+\NormalTok{  region\_id }\OtherTok{\textless{}{-}}\NormalTok{ gfwr}\SpecialCharTok{::}\FunctionTok{get\_region\_id}\NormalTok{(}
+    \AttributeTok{region\_name =}\NormalTok{ region,}
+    \AttributeTok{region\_source =} \StringTok{"eez"}\NormalTok{,}
+    \AttributeTok{key =}\NormalTok{ key}
+\NormalTok{  )}\SpecialCharTok{$}\NormalTok{id[}\DecValTok{1}\NormalTok{]}
+
+  \CommentTok{\# Convert dates into Date objects}
+\NormalTok{  start\_date }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(start\_date, }\AttributeTok{format =} \StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)}
+\NormalTok{  end\_date }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(end\_date, }\AttributeTok{format =} \StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)}
+
+  \CommentTok{\# Function to obtain data for a specific date range}
+\NormalTok{  get\_data\_for\_range }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(start\_date, end\_date) \{}
+\NormalTok{    date\_range }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(start\_date, end\_date, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
+
+\NormalTok{    data }\OtherTok{\textless{}{-}}\NormalTok{ gfwr}\SpecialCharTok{::}\FunctionTok{get\_raster}\NormalTok{(}
+      \AttributeTok{spatial\_resolution =}\NormalTok{ spat\_res,}
+      \AttributeTok{temporal\_resolution =}\NormalTok{ temp\_res,}
+      \AttributeTok{group\_by =} \StringTok{"flagAndGearType"}\NormalTok{,}
+      \AttributeTok{date\_range =}\NormalTok{ date\_range,}
+      \AttributeTok{region =}\NormalTok{ region\_id,}
+      \AttributeTok{region\_source =} \StringTok{"eez"}\NormalTok{,}
+      \AttributeTok{key =}\NormalTok{ key}
+\NormalTok{    )}
+
+    \FunctionTok{return}\NormalTok{(data)}
+\NormalTok{  \}}
+
+  \CommentTok{\# Check whether the date range is less than or equal to 366 days}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{difftime}\NormalTok{(end\_date, start\_date, }\AttributeTok{units =} \StringTok{"days"}\NormalTok{)) }\SpecialCharTok{\textless{}=} \DecValTok{366}\NormalTok{) \{}
+    \CommentTok{\# If yes, obtain data for the entire date range}
+\NormalTok{    data\_df }\OtherTok{\textless{}{-}} \FunctionTok{get\_data\_for\_range}\NormalTok{(start\_date, end\_date)}
+\NormalTok{  \} }\ControlFlowTok{else}\NormalTok{ \{}
+    \CommentTok{\# If not, divide the date range into 366{-}day chunks and obtain the data for each chunk.}
+\NormalTok{    date\_chunks }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(start\_date, end\_date, }\AttributeTok{by =} \StringTok{"366 days"}\NormalTok{)}
+\NormalTok{    data\_df }\OtherTok{\textless{}{-}}\NormalTok{ purrr}\SpecialCharTok{::}\FunctionTok{map\_dfr}\NormalTok{(}
+\NormalTok{      date\_chunks,}
+      \SpecialCharTok{\textasciitilde{}} \FunctionTok{get\_data\_for\_range}\NormalTok{(.x, }\FunctionTok{min}\NormalTok{(.x }\SpecialCharTok{+} \DecValTok{365}\NormalTok{, end\_date))}
+\NormalTok{    )}
+\NormalTok{  \}}
+
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{isTRUE}\NormalTok{(compress)) \{}
+    \CommentTok{\# GFW data will always be "EPSG:4326". No need to have CRS as an option here}
+
+\NormalTok{    data\_df }\OtherTok{\textless{}{-}}\NormalTok{ data\_df }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{, }\StringTok{"Apparent Fishing Hours"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      dplyr}\SpecialCharTok{::}\FunctionTok{group\_by}\NormalTok{(Lon, Lat) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      dplyr}\SpecialCharTok{::}\FunctionTok{summarise}\NormalTok{(}\StringTok{"Apparent Fishing Hours"} \OtherTok{=} \FunctionTok{sum}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Apparent Fishing Hours}\StringTok{\textasciigrave{}}\NormalTok{,}
+        \AttributeTok{na.rm =} \ConstantTok{TRUE}
+\NormalTok{      )) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      dplyr}\SpecialCharTok{::}\FunctionTok{ungroup}\NormalTok{()}
+
+\NormalTok{    data\_sf }\OtherTok{\textless{}{-}}\NormalTok{ data\_df }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      terra}\SpecialCharTok{::}\FunctionTok{rast}\NormalTok{(}\AttributeTok{type =} \StringTok{"xyz"}\NormalTok{, }\AttributeTok{crs =} \StringTok{"EPSG:4326"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# Convert to polygons for easier use}
+\NormalTok{      terra}\SpecialCharTok{::}\FunctionTok{as.polygons}\NormalTok{(}
+        \AttributeTok{trunc =} \ConstantTok{FALSE}\NormalTok{,}
+        \AttributeTok{dissolve =} \ConstantTok{FALSE}\NormalTok{,}
+        \AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{,}
+        \AttributeTok{round =} \ConstantTok{FALSE}
+\NormalTok{      ) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{()}
+
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{dim}\NormalTok{(data\_df)[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{!=} \FunctionTok{dim}\NormalTok{(data\_sf)[}\DecValTok{1}\NormalTok{]) \{}
+      \FunctionTok{stop}\NormalTok{(}\StringTok{"Data dimensions of df and sf data do not match after conversion"}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{  \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{isFALSE}\NormalTok{(compress)) \{}
+    \CommentTok{\# Combine data frames in the list into one data frame}
+\NormalTok{    data\_df }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(data\_df)}
+
+    \CommentTok{\# Separate the "Time Range" column based on the specified temp\_res}
+    \ControlFlowTok{if}\NormalTok{ (temp\_res }\SpecialCharTok{==} \StringTok{"yearly"}\NormalTok{) \{}
+\NormalTok{      data\_sf }\OtherTok{\textless{}{-}}\NormalTok{ data\_df }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{        dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{Year =} \StringTok{\textasciigrave{}}\AttributeTok{Time Range}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{        sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(}
+          \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
+          \AttributeTok{crs =} \StringTok{"EPSG:4326"}
+\NormalTok{        )}
+\NormalTok{    \} }\ControlFlowTok{else}\NormalTok{ \{}
+      \CommentTok{\# Sinon, séparer la colonne "Time Range" selon le temp\_res spécifié}
+      \ControlFlowTok{if}\NormalTok{ (temp\_res }\SpecialCharTok{==} \StringTok{"monthly"}\NormalTok{) \{}
+\NormalTok{        data\_sf }\OtherTok{\textless{}{-}}\NormalTok{ data\_df }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{          tidyr}\SpecialCharTok{::}\FunctionTok{separate}\NormalTok{(}\StringTok{"Time Range"}\NormalTok{,}
+            \AttributeTok{into =} \FunctionTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{, }\StringTok{"Month"}\NormalTok{),}
+            \AttributeTok{sep =} \StringTok{"{-}"}\NormalTok{,}
+            \AttributeTok{remove =} \ConstantTok{FALSE}
+\NormalTok{          ) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{          sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(}
+            \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
+            \AttributeTok{crs =} \StringTok{"EPSG:4326"}
+\NormalTok{          )}
+\NormalTok{      \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (temp\_res }\SpecialCharTok{==} \StringTok{"daily"}\NormalTok{) \{}
+\NormalTok{        data\_sf }\OtherTok{\textless{}{-}}\NormalTok{ data\_df }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{          tidyr}\SpecialCharTok{::}\FunctionTok{separate}\NormalTok{(}\StringTok{"Time Range"}\NormalTok{,}
+            \AttributeTok{into =} \FunctionTok{c}\NormalTok{(}\StringTok{"Year"}\NormalTok{, }\StringTok{"Month"}\NormalTok{, }\StringTok{"Day"}\NormalTok{),}
+            \AttributeTok{sep =} \StringTok{"{-}"}\NormalTok{,}
+            \AttributeTok{remove =} \ConstantTok{FALSE}
+\NormalTok{          ) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{          sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{(}
+            \AttributeTok{coords =} \FunctionTok{c}\NormalTok{(}\StringTok{"Lon"}\NormalTok{, }\StringTok{"Lat"}\NormalTok{),}
+            \AttributeTok{crs =} \StringTok{"EPSG:4326"}
+\NormalTok{          )}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{  \}}
+
+  \CommentTok{\# But you may wish to return the data in a different CRS. For this you need transform}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{isFALSE}\NormalTok{(cCRS }\SpecialCharTok{==} \StringTok{"EPSG:4326"}\NormalTok{)) \{}
+\NormalTok{    data\_sf }\OtherTok{\textless{}{-}}\NormalTok{ data\_sf }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{      sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}\AttributeTok{crs =}\NormalTok{ cCRS)}
+\NormalTok{  \}}
+
+  \FunctionTok{return}\NormalTok{(data\_sf)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+To get the raw values given by GFW we do not need to specify any
+variable of gathering in \texttt{group\_by\_vars} parameter.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_sf\_combined }\OtherTok{\textless{}{-}} \FunctionTok{get\_gfwData}\NormalTok{(}
+  \AttributeTok{region =} \StringTok{"Australie"}\NormalTok{,}
+  \AttributeTok{start\_date =} \StringTok{"2021{-}01{-}01"}\NormalTok{,}
+  \AttributeTok{end\_date =} \StringTok{"2023{-}12{-}31"}\NormalTok{,}
+  \AttributeTok{temp\_res =} \StringTok{"yearly"}\NormalTok{,}
+  \AttributeTok{spat\_res =} \StringTok{"low"}\NormalTok{,}
+  \AttributeTok{key =}\NormalTok{ key,}
+  \AttributeTok{compress =} \ConstantTok{FALSE}
+\NormalTok{)}
+
+\NormalTok{data\_sf\_combined }\OtherTok{\textless{}{-}} \FunctionTok{get\_gfwData}\NormalTok{(}\StringTok{"Australie"}\NormalTok{,}
+  \StringTok{"2019{-}01{-}01"}\NormalTok{,}
+  \StringTok{"2023{-}12{-}31"}\NormalTok{,}
+  \StringTok{"yearly"}\NormalTok{,}
+  \AttributeTok{compress =} \ConstantTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{visualization}{%
+\subsection{Visualization}\label{visualization}}
+
+To display the data, we load : - The coastline from
+\texttt{rnaturalearth} package and modify it to get an sf object, and we
+constrain it to the boundaries of the given data. - EEZ Polygons from
+\_Flanders Marine Institute (2023). Maritime Boundaries Geodatabase:
+Maritime Boundaries and Exclusive Economic Zones (200NM), version 12.
+Available online at \url{https://www.marineregions.org/}.
+\url{https://doi.org/10.14284/632_}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Check and modify if necessary the spatial reference of data\_sf\_combined}
+\NormalTok{data\_sf\_combined }\OtherTok{\textless{}{-}}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_set\_crs}\NormalTok{(}
+\NormalTok{  data\_sf\_combined,}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(rnaturalearth}\SpecialCharTok{::}\FunctionTok{ne\_coastline}\NormalTok{(}\AttributeTok{scale =} \StringTok{"large"}\NormalTok{))}
+\NormalTok{)}
+
+\NormalTok{coast\_clipped }\OtherTok{\textless{}{-}}\NormalTok{ rnaturalearth}\SpecialCharTok{::}\FunctionTok{ne\_coastline}\NormalTok{(}\AttributeTok{scale =} \StringTok{"large"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sf}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_intersection}\NormalTok{(sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sfc}\NormalTok{(sf}\SpecialCharTok{::}\FunctionTok{st\_bbox}\NormalTok{(data\_sf\_combined)))}
+
+\CommentTok{\# Load EEZ polygons}
+\DocumentationTok{\#\# Downloaded data}
+\CommentTok{\# eezs \textless{}{-} sf::st\_read(dsn = \textquotesingle{}\textasciitilde{}/2024\_Research\_A\_UQ/World\_EEZ\_v12\_20231025/\textquotesingle{}) \%\textgreater{}\%}
+\CommentTok{\#   sf::st\_transform(crs = sf::st\_crs(data\_sf\_combined)) \%\textgreater{}\%}
+\CommentTok{\#   sf::st\_make\_valid() \%\textgreater{}\%}
+\CommentTok{\#   sf::st\_intersection(sf::st\_as\_sfc(sf::st\_bbox(data\_sf\_combined)))}
+
+\NormalTok{eezs }\OtherTok{\textless{}{-}}\NormalTok{ mregions}\SpecialCharTok{::}\FunctionTok{mr\_shp}\NormalTok{(}\AttributeTok{key =} \StringTok{"Australia:eez"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(geoname }\SpecialCharTok{==} \StringTok{"Australian Exclusive Economic Zone"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_transform}\NormalTok{(}\AttributeTok{crs =}\NormalTok{ sf}\SpecialCharTok{::}\FunctionTok{st\_crs}\NormalTok{(data\_sf\_combined)) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_make\_valid}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  sf}\SpecialCharTok{::}\FunctionTok{st\_intersection}\NormalTok{(sf}\SpecialCharTok{::}\FunctionTok{st\_as\_sfc}\NormalTok{(sf}\SpecialCharTok{::}\FunctionTok{st\_bbox}\NormalTok{(data\_sf\_combined)))}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{here-we-display-the-fishing-effort-in-australia-from-2019-to-2023.}{%
+\paragraph{Here we display the Fishing Effort in Australia from 2019 to
+2023.}\label{here-we-display-the-fishing-effort-in-australia-from-2019-to-2023.}}
+
+\hypertarget{raw-fishing-effort}{%
+\subparagraph{Raw Fishing Effort}\label{raw-fishing-effort}}
+
+\includegraphics{gfwrPackageStraightforwardApproach_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\hypertarget{by-years}{%
+\subparagraph{By years}\label{by-years}}
+
+\includegraphics{gfwrPackageStraightforwardApproach_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\hypertarget{year-on-year-comparison}{%
+\subparagraph{Year-on-year comparison}\label{year-on-year-comparison}}
+
+We may need to compare different timeframes, such as seasons, to see if
+there are any patterns. \textbf{Note :} As more vessels have adopted AIS
+(mainly in economically developed countries) since the deployment of
+these technologies, the rise in activities must be seen in the context
+of this increase and not necessarily of more intense fishing activity.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# We need to change the temporal range according to our need group by it to}
+\CommentTok{\# display the total fishing hours. \textless{}br\textgreater{}}
+\NormalTok{data\_sf\_combined }\OtherTok{\textless{}{-}} \FunctionTok{get\_gfwData}\NormalTok{(}
+  \StringTok{"Australie"}\NormalTok{,}
+  \StringTok{"2019{-}01{-}01"}\NormalTok{,}
+  \StringTok{"2023{-}12{-}31"}\NormalTok{,}
+  \StringTok{"monthly"}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{group\_by}\NormalTok{(Year, Month) }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{summarize}\NormalTok{(}\AttributeTok{Total\_Fishing\_Hours =} \FunctionTok{sum}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{Apparent Fishing Hours}\StringTok{\textasciigrave{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{gfwrPackageStraightforwardApproach_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\hypertarget{fishing-gear-type}{%
+\subparagraph{Fishing gear type}\label{fishing-gear-type}}
+
+Here we display the Vessel activity in `Micronesia' in 2022 according to
+the fishing gear type.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_sf\_combined }\OtherTok{\textless{}{-}} \FunctionTok{get\_gfwData}\NormalTok{(}
+  \StringTok{"Micronesia"}\NormalTok{,}
+  \StringTok{"2022{-}01{-}01"}\NormalTok{,}
+  \StringTok{"2022{-}12{-}31"}\NormalTok{,}
+  \StringTok{"monthly"}\NormalTok{,}
+  \StringTok{"low"}\NormalTok{,}
+\NormalTok{  key}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{gfwrPackageStraightforwardApproach_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\hypertarget{flags}{%
+\subparagraph{Flags}\label{flags}}
+
+Here we display the Vessel activity in Papua New Guinea according to
+Vessels flags.
+
+\includegraphics{gfwrPackageStraightforwardApproach_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\hypertarget{supplementary-materials.}{%
+\subparagraph{Supplementary materials.}\label{supplementary-materials.}}
+
+The fishing detection model was trained on AIS data from 503 vessels and
+identified fishing activity with over 90\% accuracy, which means that it
+can identify a fishing and non-fishing activity with high accuracy. More
+details on AIS operation and limitations here :
+\url{https://globalfishingwatch.org/dataset-and-code-fishing-effort/}
+
+Hierarchy of vessels gear types :
+
+\url{https://globalfishingwatch.org/datasets-and-code-vessel-identity/}*
+
+\end{document}
