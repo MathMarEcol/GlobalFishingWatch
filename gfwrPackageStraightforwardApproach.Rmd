@@ -59,7 +59,7 @@ library(sf)
 
 To access GFW APIs, you need to :<br> 1. register for a GFW account here
 
-:   \<[Shortened URL](https://tinyurl.com/2pr5nxxk)\> <br> 2. Request
+:   \<[gfw account creation link](https://tinyurl.com/2pr5nxxk)\> <br> 2. Request
     API key here : <https://globalfishingwatch.org/our-apis/tokens>
 
 Once you have your token, add it to your .Renviron file (by executing
